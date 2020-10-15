@@ -1,0 +1,11 @@
+SSM整合Redis二:(主要依赖于spring的缓存管理)
+1：下载Redis.clients
+2：准备redis.properties属性文件
+3：编写spring配置文件(
+    3.1：引入Redis.properties
+    3.2：配置Redis连接池
+    3.3：配置Redis连接
+    3.4配置redis操作模板
+)
+
+

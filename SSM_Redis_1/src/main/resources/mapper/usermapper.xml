@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace用來定位具具体是哪一个mapper文件的东西，不能与其他mapper的namespace重复 -->
+<mapper namespace="com.zhiyou.dao.UserDao">
+<!-- 开启缓存 -->
+<cache type="com.zhiyou.redis.RedisCache"/>
+<!-- id:    用来配合namespace用来定位sql语句的，在同一个mapper之中不能重复 
+ resultType 用来指定查询语句的结果集类型，如果查询出来是多条记录会自动包装为对应的list集合，要求model的属性名需要与数据库的列名一致(同名匹配原则)
+ column对应数据库的名称 property对应java的名称
+ resultMap 当数据库列名与model属性名不一致的时候，查询语句可以使用resultMap来自定义返回结果集，在其中指定数据库中的列对应于model哪一条属性
+ parameterType  用来指定当前sql中需要使用的参数类型，如果传入的是model在sql中就可以使用#{属性名}来取值的操作，如果传入的是一个字符串或基本数据类型
+ 可以使用#{任意字符}来进行取值，一般情况下我们可以默认省略掉参数类型mabatis类型，但是开发之中建议不用省略 -->
+	<insert id="add" parameterType="user">
+		insert into user values(#{id},#{name},#{password},#{qian});
+	</insert>
+	<delete id="delete" parameterType="int">
+		delete from user where id=#{id};
+	</delete>
+	<update id="update" parameterType="user" >
+		update user
+		<trim prefix="set" prefixOverrides=",">
+		<if test="name!=null">
+		name=#{name}
+		</if>
+		<if test="password!=null">
+		,password=#{password}
+		</if>
+		<if test="qian!=null">
+		,qian=#{qian}
+		</if>
+		</trim>
+		where id=#{id}
+	</update>
+	<resultMap type="user" id="userMap">
+	<id column="id" property="id"/>
+	<result column="name" property="name"/>
+	<result column="password" property="password"/>
+	<result column="qian" property="qian"/>
+	</resultMap>
+	<!-- <select id="select" resultMap="userMap">
+	可以引入被抽离出来的sql语句
+	<include refid="aaa"></include>
+	</select>
+	将需要重复使用的sql语句的内容抽离出来
+	<sql id="aaa">
+	select * from user
+	<trim prefix="where" prefixOverrides="and|or">
+	<if test="id!=null">
+	id=#{id}
+	</if>
+	<if test="name!=null">
+	and name=#{name}
+	</if>
+	<if test="password!=null">
+	and password=#{password}
+	</if>
+	<if test="qian!=null">
+	and qian=#{qian}
+	</if>
+	</trim></sql> -->
+	<select id="select" resultMap="userMap">
+	select * from user
+	</select>
+	<select id="selectById" resultMap="userMap">
+	select * from user where id=#{id}
+	</select>
+</mapper>
+    
